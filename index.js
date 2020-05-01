@@ -177,12 +177,42 @@ console.log(getGoals(fifaData));
 
 /* STRETCH 2: Write a function called badDefense() that accepts a parameter `data` and calculates the team with the most goals scored against them per appearance (average goals against) in the World Cup finals */
 
-function badDefense(/* code here */) {
+function badDefense(data) {
+    let goals = {};
+    let worstDefense = "";
 
-    /* code here */
-
+    data.map(game=>{
+        if(game.Stage === "Final"){
+            if(!goals[game["Home Team Initials"]]){
+                goals[game["Home Team Initials"]] = {
+                    appearances: 0,
+                    against: 0
+                }
+            }
+            if(!goals[game["Away Team Initials"]]){
+                goals[game["Away Team Initials"]] = {
+                    appearances: 0,
+                    against: 0
+                }
+            }
+            goals[game["Home Team Initials"]].against += game["Away Team Goals"];
+            goals[game["Home Team Initials"]].appearances++
+            goals[game["Away Team Initials"]].against += game["Home Team Goals"]
+            goals[game["Away Team Initials"]].appearances++
+        }
+        for(let team in goals){
+           if(!worstDefense){
+               worstDefense = team;
+           }else {
+               if(goals[team].against/goals[team].appearances > goals[worstDefense].against/goals[worstDefense].appearances){
+                   worstDefense = team;
+               }
+           }
+        }
+    });
+    return worstDefense;
 };
 
-badDefense();
+console.log(badDefense(fifaData));
 
 /* If you still have time, use the space below to work on any stretch goals of your chosing as listed in the README file. */
